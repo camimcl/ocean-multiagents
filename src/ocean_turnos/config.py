@@ -40,7 +40,7 @@ class Settings:
             raise ValueError("OCEAN_ADVANCE_TICKS_MAX deve estar entre 1 e 432")
 
     @classmethod
-    def from_env(cls) -> "Settings":
+    def from_env(cls) -> Settings:
         load_dotenv()
         return cls(
             base_url=os.getenv("OCEAN_BASE_URL", "http://127.0.0.1:8000").rstrip("/"),

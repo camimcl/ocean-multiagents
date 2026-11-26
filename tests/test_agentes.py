@@ -1,12 +1,11 @@
 import unittest
 
-from tests import _path  # noqa: F401
-from tests import fakes
 from ocean_turnos.agents import coordinator, economy, navigation, safety
 from ocean_turnos.contract import Proposal, set_speed
 from ocean_turnos.graph import deliberate
 from ocean_turnos.pack import parse_pack
 from ocean_turnos.tools import fuel
+from tests import fakes
 
 
 class TestFerramentas(unittest.TestCase):
@@ -47,7 +46,8 @@ class TestNavegacao(unittest.TestCase):
         self.assertFalse([p for p in navigation.propose(view) if p.ship_id == "S1-FAROL"])
 
     def test_pane_e04_hold_depois_reparo(self):
-        moving = parse_pack(fakes.pack(ships={"S4-ATLAS": fakes.underway(e04_active=True, active_limit_speed_kn="10.00")}))
+        faulty = fakes.underway(e04_active=True, active_limit_speed_kn="10.00")
+        moving = parse_pack(fakes.pack(ships={"S4-ATLAS": faulty}))
         self.assertEqual(next(p for p in navigation.propose(moving) if p.ship_id == "S4-ATLAS").action["type"], "HOLD")
         stopped = fakes.underway(e04_active=True, ship_state="HOLDING", effective_speed_kn="0.00",
                                  allowed_actions_now=[{"action": "REPAIR", "constraints": {}}])

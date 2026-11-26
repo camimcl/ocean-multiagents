@@ -24,7 +24,7 @@ class TurnClient:
     def close(self) -> None:
         self.http.close()
 
-    def __enter__(self) -> "TurnClient":
+    def __enter__(self) -> TurnClient:
         return self
 
     def __exit__(self, *exc: object) -> None:

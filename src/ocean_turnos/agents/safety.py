@@ -40,7 +40,8 @@ def review(proposal: Proposal, view: TurnView, reviewer: str = ROLE) -> Review:
     if kind == "BUY_FUEL":
         qty = action["quantity_t"]
         if qty > int(constraints.get("max_quantity_t", 0)):
-            return veto("FUEL_LIMIT", f"{qty} t acima do máximo permitido agora ({constraints.get('max_quantity_t')} t)")
+            limit = constraints.get("max_quantity_t")
+            return veto("FUEL_LIMIT", f"{qty} t acima do máximo permitido agora ({limit} t)")
 
     return Review(reviewer, True, f"Aprovado: {kind} dentro das ações permitidas, limites e reserva de combustível.",
                   ["SAFETY_OK"])

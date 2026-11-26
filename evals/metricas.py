@@ -35,7 +35,7 @@ def compute(run_dir: Path) -> dict[str, Any]:
     min_margin: dict[str, float] = {}
     first_action_tick: dict[str, dict[str, int]] = {}  # evento -> navio -> tick
     events_due: dict[str, tuple[int, list[str]]] = {}
-    for pack_path, dec_path in zip(packs, decisions):
+    for pack_path, dec_path in zip(packs, decisions, strict=True):
         pack, dec = load(pack_path), load(dec_path)
         tick = pack["meta"]["current_tick"]
         for sid, ship in pack["ships"].items():
@@ -51,8 +51,11 @@ def compute(run_dir: Path) -> dict[str, Any]:
                     first_action_tick.setdefault(code, {}).setdefault(d["ship_id"], tick)
 
     reactions = {
-        code: {"due": due, "acted": first_action_tick.get(code, {}),
-               "on_time": all(t <= due for t in first_action_tick.get(code, {}).values()) and bool(first_action_tick.get(code))}
+        code: {
+            "due": due,
+            "acted": (acted := first_action_tick.get(code, {})),
+            "on_time": bool(acted) and all(t <= due for t in acted.values()),
+        }
         for code, (due, _) in events_due.items()
     }
     summary_path = run_dir / "resumo.json"

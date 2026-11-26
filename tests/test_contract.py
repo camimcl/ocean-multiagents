@@ -1,6 +1,5 @@
 import unittest
 
-from tests import _path  # noqa: F401
 from ocean_turnos.contract import buy_fuel, set_speed, validate_action, validate_decision_doc
 
 

@@ -6,8 +6,8 @@ A chave nunca aparece no código, em log ou em mensagem de erro.
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Mapping
 
 PROVIDERS = {
     # provedor: (URL base compatível com OpenAI ou None, variável da chave, modelo padrão)

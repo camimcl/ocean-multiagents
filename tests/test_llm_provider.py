@@ -1,6 +1,5 @@
 import unittest
 
-from tests import _path  # noqa: F401
 from ocean_turnos.llm import justificativas
 from ocean_turnos.llm.provider import resolve
 
@@ -8,7 +7,10 @@ from ocean_turnos.llm.provider import resolve
 class TestProvider(unittest.TestCase):
     def test_padrao_e_groq(self):
         s = resolve({})
-        self.assertEqual((s.provider, s.base_url, s.api_key_var), ("groq", "https://api.groq.com/openai/v1", "GROQ_API_KEY"))
+        self.assertEqual(
+            (s.provider, s.base_url, s.api_key_var),
+            ("groq", "https://api.groq.com/openai/v1", "GROQ_API_KEY"),
+        )
 
     def test_anthropic_sem_base_url(self):
         s = resolve({"LLM_PROVIDER": "anthropic"})

@@ -35,7 +35,9 @@ def desired_speed_centi(view: TurnView, ship: ShipView) -> tuple[int, str]:
     if view.storm_active() and ship.in_exposed_segment:
         safe = nav.storm_safe_speed_centi(ship.route_id)
         if safe < target:
-            return safe, f"tempestade E01 no trecho exposto da rota {ship.route_id}: velocidade segura {safe / 100:.2f} kn"
+            return safe, (
+                f"tempestade E01 no trecho exposto da rota {ship.route_id}: velocidade segura {safe / 100:.2f} kn"
+            )
     # TODO (Matheus): slow steaming usando nav.min_speed_for_deadline_centi e o consumo cúbico.
     return target, reason
 

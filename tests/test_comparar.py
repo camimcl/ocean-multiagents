@@ -1,11 +1,10 @@
+import importlib.util
 import json
 import unittest
 from pathlib import Path
 
-from tests import _path  # noqa: F401
-import importlib.util
-
-_spec = importlib.util.spec_from_file_location("comparar", Path(__file__).resolve().parents[1] / "evals" / "comparar.py")
+_COMPARAR = Path(__file__).resolve().parents[1] / "evals" / "comparar.py"
+_spec = importlib.util.spec_from_file_location("comparar", _COMPARAR)
 comparar = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(comparar)
 REF = json.loads(comparar.REFERENCIA.read_text(encoding="utf-8"))
