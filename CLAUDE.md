@@ -9,6 +9,7 @@ Instruções para o Claude neste repositório. Valem para toda a equipe. Regras 
 - Operamos no **Modo por Turnos**: `GET /api/v1/turn/pack` → agentes deliberam → `POST /api/v1/turn/submit` → próximo pacote. O servidor envia heartbeats, assina e calcula hashes.
 - Servidor da equipe: `https://t0X.beatbot.com.br` (X = número da equipe), definido em `OCEAN_BASE_URL` no `.env`.
 - Equipe: Camile, Matheus e Rafaela desenvolvem; **Lídia revisa todos os PRs**. Divisão em `docs/03-divisao-da-equipe.md`.
+- Repositório de entrega: **`Deloitte-Tester/Bootcamp-01`** (oficial, avaliado pela banca). `camimcl/ocean-multiagents` é só para testes.
 
 ## 2. Regras oficiais do desafio (fonte: `Ocean-1/docs/guia-aluno.md`, commit `3fe0a3f`, e `round-package/`)
 Se o guia oficial mudar, atualize esta seção citando o commit novo.
@@ -102,4 +103,4 @@ python evals\comparar.py runs\<execucao> results\baseline-equipe\resumo.json   #
 ## 7. Fluxo de trabalho
 - Branch `tipo/tema-descricao` (`feat`, `fix`, `test`, `docs`, `exp`). Commits pequenos, mensagem em português no imperativo.
 - Definição de pronto: teste novo + `pytest` e `ruff` limpos + rodada conformance com `comparar.py` APROVADO + entrada no diário + PR revisado pela Lídia.
-- Toda feature gera entrada em `docs/diario-engenharia.md` no formato do próprio arquivo.
+- Toda sessão gera entrada `I-<sessão>.<n>` em `docs/diario-engenharia.md`, na seção do módulo, no formato do próprio arquivo.

@@ -6,11 +6,12 @@
 | **Camile** | Desenvolvedora | **A. Integração, Segurança e Agente LLM** | `client.py`, `contract.py`, `pack.py`, `graph.py`, `agents/coordinator.py`, `agents/safety.py`, `llm/` |
 | **Matheus** | Desenvolvedor | **B. Navegação e Simulação de custo** | `agents/navigation.py`, `tools/navigation.py`, `tools/fuel.py`, `tools/economia.py` (novo) |
 | **Rafaela** | Desenvolvedora | **C. Economia (combustível), Avaliação e Evidências** | `agents/economy.py`, `runner.py`, `scripts/`, `evals/`, `results/`, `tests/fixtures/` |
-| **Lídia** | **Revisora** | Revisa todos os PRs; guarda os critérios imutáveis e a qualidade do diário | Nenhum arquivo próprio; aprova ou pede mudanças |
+| **Lídia** | **Revisora** | Revisa todos os PRs; guarda os critérios imutáveis e a qualidade do diário | Nenhum arquivo próprio; aprova ou pede mudanças (roteiro em `docs/templates/CLAUDE.local.lidia.md`) |
 
 Mexer em arquivo de outra pessoa é permitido quando o módulo exige, mas avise no PR e peça a revisão da dona e da Lídia.
 
 **Combinados:**
+- **Repositórios:** a entrega vai para o oficial (`Deloitte-Tester/Bootcamp-01`); o privado (`camimcl/ocean-multiagents`) é só para testes iniciais.
 - **Um servidor, uma rodada por vez.** Antes de `--reset`, avise no grupo. Quem está rodando "segura o servidor" até terminar.
 - **Uma hipótese por mudança**, com o número antes e depois no PR e no diário.
 
@@ -51,7 +52,9 @@ def opcoes_de_velocidade(ship: ShipView, view: TurnView, de: int = 800, ate: int
 ```
 
 ## 3.4 Sessões por pessoa
-Cada sessão é um bloco de trabalho que termina em PR. A ordem é sugerida; não há datas. **Toda sessão fecha com uma entrada no diário** (`docs/diario-engenharia.md`).
+Cada sessão é um bloco de trabalho que termina em PR. A ordem é sugerida; não há datas.
+
+**Diário (vale para todas as sessões):** toda sessão gera a entrada `I-<sessão>.<n>` (ex.: `I-B4.1`) na seção do módulo em `docs/diario-engenharia.md`, com a hipótese escrita **antes** de rodar, mesmo quando o experimento falha. Decisões de arquitetura ou estratégia ganham uma linha `D-<sessão>.<n>` no Registro de decisões. Ao fechar um módulo, o líder escreve o "Fechamento do Mx": M1 e M5 (Rafaela), M2 e M3 (Matheus), M4 (Camile).
 
 ### Tema A: Camile (Integração, Segurança e Agente LLM)
 
@@ -116,7 +119,7 @@ Cada sessão é um bloco de trabalho que termina em PR. A ordem é sugerida; nã
 - Rodar `jogar_rodada.py --reset --label baseline` (combinado com a equipe).
 - Copiar `runs/<baseline>/resumo.json` e `resultado_final.json` para `results/baseline-equipe/`.
 - Rodar `comparar.py` contra a referência. Se reprovar, investigar qual dimensão e por quê (`/api/v1/ledger` e `metricas.py`).
-- Pronto quando: baseline salva e a Iteração I-00 escrita no diário.
+- Pronto quando: baseline salva e a entrada `I-C1.1` escrita no diário.
 
 **C2. Métricas de custo** (M1)
 - Em `evals/metricas.py`, ler `resultado_final.json` (`summary.fleet` e `economy_breakdown`) e mostrar: receita, combustível comprado, tripulação, manutenção, porto, reparo, multas, margem e **combustível sobrando no fim por navio**.
@@ -142,7 +145,8 @@ Em cada PR, conferir e só aprovar quando tudo estiver certo:
 - [ ] Teste novo e `pytest` verde.
 - [ ] Saída de `comparar.py` colada no PR: **APROVADO**.
 - [ ] Nenhum número de tick fixo para evento móvel, nenhum segredo, nenhuma ação proibida.
-- [ ] Entrada no diário completa: decisão, motivo, alternativas descartadas, evidência (números antes e depois) e aprendizado.
+- [ ] Entrada `I-<sessão>.<n>` na seção do módulo certo, completa: contexto, hipótese com número, decisão, alternativa descartada com motivo, evidência antes e depois (pasta citada), previsão × resultado e aprendizado.
+- [ ] Se for o último PR do módulo: "Fechamento do Mx" escrito pelo líder.
 - [ ] Mudança restrita ao tema (ou combinada com a dona do arquivo).
 
 A Lídia também aprova a rodada official (M5) e mantém o "Registro de decisões" do diário coerente.
