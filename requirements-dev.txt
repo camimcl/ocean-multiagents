@@ -1,0 +1,9 @@
+-r requirements.txt
+pytest>=8.0
+ruff>=0.6
+
+# Opcionais (instale só quem for usar):
+# langgraph>=0.2          # visualizar/estender o grafo (src/ocean_turnos/graph.py)
+# langchain-openai>=0.2   # LLM das justificativas (LLM_ENABLED=true)
+# langfuse>=2.0           # rastreio das chamadas de LLM
+# deepeval>=1.0           # métricas com LLM como juiz (docs/06)

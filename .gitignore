@@ -1,0 +1,19 @@
+.env
+.env.*
+!.env.example
+
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.deepeval/
+
+# Execuções locais: só as escolhidas vão para results/ (copiadas à mão)
+runs/*
+!runs/.gitkeep
+
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
