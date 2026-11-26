@@ -14,7 +14,7 @@
 - Códigos de veto em MAIÚSCULAS_COM_UNDERLINE, um por regra.
 
 ## Git
-- `main` protegida. Tudo entra por Pull Request revisado pela pessoa indicada em docs/03.
+- `master` protegida. Tudo entra por Pull Request revisado pela Lídia.
 - Branch: `tipo/tema-descricao`. Tipos: `feat`, `fix`, `test`, `docs`, `exp` (experimento). Ex.: `feat/nav-slow-steaming`, `fix/safety-reserva`.
 - Commit no imperativo, em português: "Adiciona veto por telemetria defasada".
 - PR pequeno (uma regra ou um ajuste) com o modelo abaixo.
@@ -42,4 +42,4 @@ Depois: ...
 1. Código + teste passando.
 2. Rodada em conformance com o número antes/depois.
 3. Entrada no diário.
-4. PR revisado e na `main`.
+4. PR revisado e na `master`.

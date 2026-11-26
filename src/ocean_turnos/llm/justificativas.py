@@ -6,8 +6,9 @@ Responsável: Camile.
 """
 from __future__ import annotations
 
-import os
 from typing import Any
+
+from .provider import chat_model
 
 PROMPT = (
     "Você é o agente {role} de uma frota de navios. Reescreva a justificativa abaixo em uma frase "
@@ -16,24 +17,12 @@ PROMPT = (
 )
 
 
-def _llm():  # pragma: no cover - depende de rede e chave
-    from langchain_openai import ChatOpenAI
-
-    return ChatOpenAI(
-        model=os.getenv("LLM_MODEL", "openrouter/free"),
-        base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
-        api_key=os.environ["OPENROUTER_API_KEY"],
-        temperature=0,
-        max_tokens=120,
-        timeout=30,
-    )
-
 
 def rewrite(decisions: list[dict[str, Any]], enabled: bool) -> list[dict[str, Any]]:
     if not enabled or not decisions:
         return decisions
     try:  # pragma: no cover
-        model = _llm()
+        model = chat_model()
         out = []
         for d in decisions:
             new = dict(d)
