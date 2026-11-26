@@ -1,61 +1,148 @@
-# 3. Divisão da equipe por tema e sessão
+# 3. Divisão da equipe, módulos e sessões
 
-Sessões: **S0** quinta manhã (todos juntos) · **S1** quinta tarde · **S2** quinta noite · **S3** sexta manhã · **S4** sexta tarde (entrega).
-
-## Visão geral
-| Tema | Dono | Revisor dos PRs | Arquivos |
+## 3.1 Quem faz o quê
+| Pessoa | Papel | Tema | Arquivos que são dela/dele |
 |---|---|---|---|
-| A. Integração, coordenação e LLM | **Camile** | Rafaela | `contract.py`, `pack.py`, `client.py`, `graph.py`, `agents/coordinator.py`, `llm/` |
-| B. Navegação | **Matheus** | Lídia | `agents/navigation.py`, `tools/navigation.py` |
-| C. Economia e Segurança | **Lídia** | Matheus | `agents/economy.py`, `agents/safety.py`, `tools/fuel.py` |
-| D. Operação, avaliação e documentação | **Rafaela** | Camile | `runner.py`, `scripts/`, `evals/`, `docs/`, `results/` |
+| **Camile** | Desenvolvedora | **A. Integração, Segurança e Agente LLM** | `client.py`, `contract.py`, `pack.py`, `graph.py`, `agents/coordinator.py`, `agents/safety.py`, `llm/` |
+| **Matheus** | Desenvolvedor | **B. Navegação e Simulação de custo** | `agents/navigation.py`, `tools/navigation.py`, `tools/fuel.py`, `tools/economia.py` (novo) |
+| **Rafaela** | Desenvolvedora | **C. Economia (combustível), Avaliação e Evidências** | `agents/economy.py`, `runner.py`, `scripts/`, `evals/`, `results/`, `tests/fixtures/` |
+| **Lídia** | **Revisora** | Revisa todos os PRs; guarda os critérios imutáveis e a qualidade do diário | Nenhum arquivo próprio; aprova ou pede mudanças |
 
-O revisor da Navegação é a dona da Segurança (e vice-versa), porque uma regra nova de velocidade precisa ser aceita pelo revisor de segurança.
+Mexer em arquivo de outra pessoa é permitido quando o módulo exige, mas avise no PR e peça a revisão da dona e da Lídia.
 
-## S0: alinhamento (todos, 1 h)
-- [ ] Clonar o repositório, criar `.env`, rodar `pytest` (todos verdes).
-- [ ] Baixar o `ocean_turno_tick_000.json` no site e ler juntos os campos (documento de campos do JSON).
-- [ ] Fazer **1 turno à mão pelo site** com o `scripts/decidir_arquivo.py`.
-- [ ] Combinar quem pode usar `--reset` no servidor da equipe e quando (ver Padrões).
+**Combinados:**
+- **Um servidor, uma rodada por vez.** Antes de `--reset`, avise no grupo. Quem está rodando "segura o servidor" até terminar.
+- **Uma hipótese por mudança**, com o número antes e depois no PR e no diário.
 
-## Tema A: Camile (integração, coordenação, LLM)
-| Sessão | Tarefas | Pronto quando |
-|---|---|---|
-| S1 | Validar o contrato contra o servidor real: enviar a decisão do tick 0 e conferir o `execution_report`. Ajustar `pack.py` se algum campo vier diferente | 1 turno aceito sem erro de validação |
-| S1 | Rodar `jogar_rodada.py --reset --label baseline` junto com a Rafaela | Rodada completa e nota anotada |
-| S2 | Coordenador: regras de conflito (prioridade, caixa, 2 decisões por navio), `advance_ticks` por situação | Testes de coordenador passando |
-| S3 | LLM nas justificativas (`LLM_ENABLED=true`) com fallback; rodar 1 rodada com LLM | Justificativas legíveis e rodada sem queda |
-| S3 | Grafo LangGraph para a apresentação | `build_graph()` roda e gera a imagem do grafo |
-| S4 | Revisão final dos PRs, ensaio da apresentação (arquitetura) | Main estável |
+## 3.2 Critérios imutáveis
+A política de referência do pacote faz **97,6843** em conformance, com Segurança, Serviço, Engenharia e Governança em **100** (`evals/baseline_referencia.json`).
+1. Essas quatro dimensões continuam em **100.0000**.
+2. `hard_gates` vazio e `rank_eligible = true`.
+3. Economia ≥ 90,7373 (referência) e ≥ a baseline da equipe.
+4. Todo PR que muda comportamento traz a saída **APROVADO** de `evals/comparar.py`.
 
-## Tema B: Matheus (navegação)
-| Sessão | Tarefas | Pronto quando |
-|---|---|---|
-| S1 | Entender `navigation.py` e conferir no baseline: partida, tempestade, E04 | Explicar as regras atuais para a equipe |
-| S1 | Testar em conformance a reação à tempestade (ver `metricas.py`: reação a E01 dentro do prazo) | Reação no prazo em todos os navios |
-| S2 | **Slow steaming:** usar `tools/navigation.min_speed_for_deadline_centi` para baixar a velocidade de cruzeiro por navio sem perder prazo | Economia sobe e nenhum navio atrasa |
-| S3 | Rota direta × protegida por navio (comparar 2 rodadas) e E06 (berço fechado do S2) | Decisão registrada no diário com números |
-| S4 | Rodada official, ajuste final, parte da apresentação (estratégia de navegação) | Nota official registrada |
+**Onde dá para ganhar:** só na Economia. Margem (70%): lucro por tonelada até D$ 20/t. Eficiência (30%): menos combustível consumido por tonelada-milha. O teto de ganho na nota final é de cerca de 2,3 pontos. Perder pontos nas outras dimensões é muito mais fácil do que ganhar na Economia.
 
-## Tema C: Lídia (economia e segurança)
-| Sessão | Tarefas | Pronto quando |
-|---|---|---|
-| S1 | Conferir a fórmula de `tools/fuel.py` contra o consumo real dos `turno_NN_pack.json` da rodada baseline | Erro da estimativa anotado no diário |
-| S1 | Economia: ajustar margem de compra (`weather_margin`, `safety_buffer_t`) para não sobrar nem faltar combustível | Folga mínima > 0 em todos os navios |
-| S2 | Segurança: novos vetos com teste (ex.: telemetria defasada, prazo inviável, caixa abaixo da reserva) | Cada veto com teste e código de motivo |
-| S3 | Veto legítimo demonstrável (pelo menos 1 rejeição real e justificada na rodada) | Aparece no ledger como `rejected` |
-| S4 | Revisão final das regras, parte da apresentação (governança: maker-checker) | Zero Hard Gates na rodada final |
+## 3.3 Os módulos (entregas conjuntas, cada uma testável)
+| Módulo | Entrega | Líder + apoio | Como testar | Depende de |
+|---|---|---|---|---|
+| **M1 Régua** | Baseline da equipe medida, salva e travada; métricas de custo | Rafaela + Camile | `comparar.py` contra a referência; `metricas.py` mostra os custos por tipo | nada |
+| **M2 Simulador** | `simular_plano()` e `opcoes_de_velocidade()` validados contra uma rodada real | Matheus + Rafaela | `tests/test_simulador.py`; `evals/validar_simulador.py` com erro ≤ 5% no combustível | M1 (precisa de uma rodada salva) |
+| **M3 Plano econômico** | Velocidade por menor custo + compra sob medida + vetos de prazo e reserva | Matheus + Rafaela + Camile | Rodada conformance: `comparar.py` APROVADO **e** Economia > baseline | M2 |
+| **M4 Agente LLM** | Agente de navegação com LLM chamando as tools do M2, com portão de segurança e fallback | Camile + Matheus | Testes com LLM falso; rodada com LLM: `comparar.py` APROVADO; nº de chamadas registrado | M2 (interface), M3 (para comparar) |
+| **M5 Entrega** | Rodada official, `results/final_result.json`, diário e README finais | Rafaela + todos | `rank_eligible = true`, 4 dimensões em 100, diário completo | M3 ou M4 |
 
-## Tema D: Rafaela (operação, avaliação, documentação)
-| Sessão | Tarefas | Pronto quando |
-|---|---|---|
-| S1 | Rodar a baseline completa e o `evals/metricas.py`; copiar o resumo para `results/` | Linha de base registrada no diário |
-| S1 | Rodar também o exemplo do professor (`starter/exemplo_turno_multiagentes.py --play-round`) para comparar | Tabela "nossa × professor" no diário |
-| S2 | Transformar 3 a 5 pacotes reais de `runs/` em casos de teste (`tests/fixtures/`) com a decisão esperada | Testes de regressão no `pytest` |
-| S3 | Rodar cada PR em conformance e registrar antes/depois; DeepEval opcional (docs/06) | Diário com 1 entrada por mudança |
-| S4 | Rodada official final, `results/final_result.json`, README, diário fechado, slides | Entrega pronta |
+**Contrato do M2** (definido agora para o M3 e o M4 poderem começar em paralelo):
+```python
+@dataclass(frozen=True)
+class PlanoSimulado:
+    speed_centi: int                 # velocidade de cruzeiro testada
+    ticks_ate_chegada: int
+    folga_prazo_ticks: int           # deadline - (chegada + 12 de descarga); < 0 = atrasa
+    combustivel_consumido_t: float
+    folga_reserva_t: float           # combustível na chegada - reserva mínima; < 0 = Hard Gate
+    custo_combustivel_cent: int      # consumido x preço de reposição atual
+    custo_tempo_cent: int            # (tripulação + manutenção) x ticks até o fim da descarga
+    custo_total_cent: int
+    viavel: bool                     # folga_prazo_ticks >= 0 e folga_reserva_t >= 0
 
-## Combinados que valem para todos
-- **Um servidor, uma rodada por vez.** Antes de usar `--reset`, avise no grupo. Quem estiver rodando "segura o servidor" até terminar.
-- **Uma hipótese por mudança** e o número antes/depois no PR.
-- Dúvida sobre regra do jogo: perguntar à Camile (integração) ou ao orientador; registrar a resposta em `docs/`.
+def simular_plano(ship: ShipView, view: TurnView, speed_centi: int) -> PlanoSimulado: ...
+def opcoes_de_velocidade(ship: ShipView, view: TurnView, de: int = 800, ate: int = 1400, passo: int = 50) -> list[PlanoSimulado]: ...
+```
+
+## 3.4 Sessões por pessoa
+Cada sessão é um bloco de trabalho que termina em PR. A ordem é sugerida; não há datas. **Toda sessão fecha com uma entrada no diário** (`docs/diario-engenharia.md`).
+
+### Tema A: Camile (Integração, Segurança e Agente LLM)
+
+**A1. Primeiro turno real e prova multiagente** (M1)
+- Configurar o `.env` com o servidor da equipe; rodar `decidir_arquivo.py` no pacote do tick 0 e enviar um turno.
+- Junto com a Rafaela, rodar a baseline (`--reset --label baseline`).
+- Ler `multi_agent_proof` no resultado: **cada agente tem ≥ 10 transações committed e ≥ 2 navios?** Hoje a economia só propõe compras no início. Se faltar, ajustar o coordenador (por exemplo, alternar o revisor entre `safety` e `coordinator`, ou redistribuir propostas).
+- Pronto quando: a baseline tem `multi_agent_proof.compliant = true`, ou o ajuste está feito e testado.
+
+**A2. Portão de segurança v2** (M3)
+- Trocar `_fuel_ok` em `agents/safety.py` por `simular_plano()` do M2 (folga de reserva real até o destino).
+- Novos vetos, cada um com código e teste: `DEADLINE_RISK` (folga de prazo < 0), `RESERVE_RISK` (folga de reserva abaixo da margem), `STALE_TELEMETRY` (ação agressiva com `state_age_ticks > 2`).
+- Pronto quando: os testes de cada veto passam e a rodada conformance segue APROVADA.
+
+**A3. Tools para o LLM** (M4)
+- Em `llm/tools.py`, expor como `@tool` (LangChain): `estado_do_navio(ship_id)`, `opcoes_de_velocidade(ship_id)` (a tabela do M2) e `eventos_ativos()`.
+- As tools leem o `TurnView` do turno atual, injetado pelo código (nunca vindo do LLM).
+- Pronto quando: cada tool tem teste sem rede.
+
+**A4. Agente LLM de navegação** (M4)
+- Em `llm/agente_navegacao.py`: grafo LangGraph `analisar ⇄ tools → proposta`, com saída estruturada (`Proposal`).
+- O LLM só é chamado para navios citados em `stop_reasons` ou com evento ativo; os outros seguem a regra.
+- Portão: a proposta do LLM passa por `safety.review` (código). Se o LLM falhar, demorar ou propor algo vetado, usar a regra do M3.
+- Contar as chamadas de LLM por rodada e salvar em `runs/`.
+- Pronto quando: testes com LLM falso cobrem os 3 caminhos (aceita, vetada, falha com fallback).
+
+**A5. Rodada com LLM e comparação** (M4)
+- Ligar com `LLM_DECIDE=true` (flag nova; `LLM_ENABLED` continua só para justificativas).
+- Rodada conformance com e sem LLM: comparar nota, custo e número de chamadas.
+- Pronto quando: `comparar.py` APROVADO e a diferença registrada no diário.
+
+### Tema B: Matheus (Navegação e Simulação de custo)
+
+**B1. Física e custos do simulador** (M2)
+- Conferir `tools/fuel.py` contra `Ocean-1/server/ocean_server/sim_phases.py` (`compute_step_physics`).
+- Descobrir no pacote onde está o custo por tick (`route_and_contract.crew_tick_cent`, `economy.maintenance_tick_cent_per_ship`) e se a tripulação é cobrada até a entrega ou durante a rodada toda (comparar `economy.totals` entre dois turnos).
+- Pronto quando: as respostas estão no diário, seção "Descobertas".
+
+**B2. Simulador de plano** (M2)
+- Criar `tools/economia.py` com o contrato da seção 3.3 (adicionar em `pack.py` os campos que faltarem, avisando a Camile).
+- Testes em `tests/test_simulador.py`: velocidade maior consome mais; folga de prazo cai com velocidade menor; plano inviável marcado com `viavel=False`.
+
+**B3. Validação contra rodada real** (M2, com a Rafaela)
+- `evals/validar_simulador.py runs/<baseline>`: para cada navio, prever no turno T o combustível na chegada e comparar com o que aconteceu.
+- Pronto quando: erro ≤ 5% no combustível, ou a diferença explicada no diário.
+
+**B4. Velocidade por menor custo** (M3)
+- Em `agents/navigation.py`, `desired_speed_centi` passa a escolher, entre as opções viáveis do M2, a de **menor custo total** com folga de prazo ≥ 12 ticks.
+- Manter a regra da tempestade (velocidade segura no trecho exposto) e a da pane E04.
+- Anti-churn: só propor nova velocidade se a economia prevista passar de um limiar (definir e justificar no diário).
+- Pronto quando: rodada conformance com Economia > baseline e `comparar.py` APROVADO.
+
+**B5. Rota direta × protegida** (M3, opcional)
+- Duas rodadas conformance, uma com cada rota por navio, e a decisão registrada com números.
+
+**B6. Apoio ao M4**
+- Definir com a Camile o formato da tabela que o LLM recebe (`opcoes_de_velocidade`) e revisar o prompt.
+
+### Tema C: Rafaela (Economia, Avaliação e Evidências)
+
+**C1. Baseline da equipe** (M1)
+- Rodar `jogar_rodada.py --reset --label baseline` (combinado com a equipe).
+- Copiar `runs/<baseline>/resumo.json` e `resultado_final.json` para `results/baseline-equipe/`.
+- Rodar `comparar.py` contra a referência. Se reprovar, investigar qual dimensão e por quê (`/api/v1/ledger` e `metricas.py`).
+- Pronto quando: baseline salva e a Iteração I-00 escrita no diário.
+
+**C2. Métricas de custo** (M1)
+- Em `evals/metricas.py`, ler `resultado_final.json` (`summary.fleet` e `economy_breakdown`) e mostrar: receita, combustível comprado, tripulação, manutenção, porto, reparo, multas, margem e **combustível sobrando no fim por navio**.
+- Comparar duas execuções lado a lado (`metricas.py runs/a runs/b`).
+
+**C3. Compra sob medida** (M3)
+- Em `agents/economy.py`, dimensionar a compra para o plano de velocidade do M2 (não mais 14 kn fixo), com margem de segurança justificada.
+- Preferir a janela de preço mais barata; o fornecedor da origem fecha depois do tick 95.
+- Pronto quando: o combustível sobrando no fim cai, nenhum navio chega perto da reserva e `comparar.py` APROVADO.
+
+**C4. Casos de regressão com pacotes reais** (M3 e M4)
+- Copiar de `runs/` para `tests/fixtures/` os pacotes do tick 0, do início da tempestade e do tick 288 (pane), com a decisão esperada de cada um.
+
+**C5. Rodada official e evidência** (M5)
+- Só com a aprovação da Lídia. Rodada official, `results/final_result.json`, diário com `score_final`, dimensões, `multi_agent_proof` e `merkle_root_sha256`, README final.
+
+**C6. DeepEval** (opcional, depois do M4)
+- G-Eval para a fidelidade das justificativas do LLM; métricas próprias para folga de reserva e reação a eventos (`docs/06`).
+
+### Lídia (Revisão)
+Em cada PR, conferir e só aprovar quando tudo estiver certo:
+- [ ] O PR diz qual módulo e sessão atende.
+- [ ] Teste novo e `pytest` verde.
+- [ ] Saída de `comparar.py` colada no PR: **APROVADO**.
+- [ ] Nenhum número de tick fixo para evento móvel, nenhum segredo, nenhuma ação proibida.
+- [ ] Entrada no diário completa: decisão, motivo, alternativas descartadas, evidência (números antes e depois) e aprendizado.
+- [ ] Mudança restrita ao tema (ou combinada com a dona do arquivo).
+
+A Lídia também aprova a rodada official (M5) e mantém o "Registro de decisões" do diário coerente.

@@ -1,4 +1,6 @@
 .env
+# Instruções pessoais do Claude (cada integrante tem o seu, fora do git)
+CLAUDE.local.md
 .env.*
 !.env.example
 

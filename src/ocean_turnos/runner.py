@@ -53,6 +53,7 @@ def play_round(client: TurnClient, settings: Settings, reset: bool, label: str =
         "rank_eligible": payload.get("rank_eligible"),
         "hard_gates": payload.get("hard_gates"),
         "multi_agent_proof": payload.get("multi_agent_proof"),
+        "dimensoes": {k: v.get("normalized") for k, v in (payload.get("dimensions") or {}).items()},
         "scenario_mode": settings.scenario_mode,
     }
     _save(run_dir / "resumo.json", summary)

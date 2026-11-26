@@ -1,0 +1,12 @@
+{
+  "origem": "Ocean-1/round-package/baseline/expected-result.json (política de referência do pacote, modo conformance)",
+  "score_final": "97.6843",
+  "dimensoes": {
+    "safety": "100.0000",
+    "economy": "90.7373",
+    "service": "100.0000",
+    "engineering_resilience": "100.0000",
+    "observability_governance": "100.0000"
+  },
+  "hard_gates": []
+}
