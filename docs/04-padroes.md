@@ -14,32 +14,39 @@
 - Códigos de veto em MAIÚSCULAS_COM_UNDERLINE, um por regra.
 
 ## Git
-- `main` protegida. Tudo entra por Pull Request revisado pela pessoa indicada em docs/03.
+- `master` protegida. Tudo entra por Pull Request revisado pela Lídia.
 - Branch: `tipo/tema-descricao`. Tipos: `feat`, `fix`, `test`, `docs`, `exp` (experimento). Ex.: `feat/nav-slow-steaming`, `fix/safety-reserva`.
 - Commit no imperativo, em português: "Adiciona veto por telemetria defasada".
 - PR pequeno (uma regra ou um ajuste) com o modelo abaixo.
 
 ```markdown
+Título: [Mx/<sessão>] descrição curta
+
 ## O que muda
-## Hipótese
-## Evidência (conformance)
+## Hipótese (com número)
+## Evidência (conformance, pasta em runs/ ou results/)
 Antes: nota X (Seg | Eco | Srv | Eng | Gov), combustível Y t, multas D$ Z
 Depois: ...
+## Saída do comparar.py
+(colar aqui; precisa dizer APROVADO)
+## Diário
+Link para a entrada I-<sessão>.<n>
 ## Checklist
 - [ ] pytest verde e ruff limpo
 - [ ] teste novo cobrindo a regra
-- [ ] entrada no diário
-- [ ] nenhum tick fixo para evento móvel, nenhum segredo
+- [ ] entrada no diário completa (e fechamento do módulo, se for o último PR dele)
+- [ ] nenhum tick fixo para evento móvel, nenhum segredo, nenhuma ação proibida
 ```
 
 ## Execuções e resultados
 - Toda rodada automática gera `runs/<data-hora>-<label>/` (não vai para o git).
 - Label curto e descritivo: `baseline`, `nav-slow-13kn`, `eco-margem-5t`, `official-final`.
-- Rodadas que viram evidência são copiadas para `results/` com o mesmo nome e citadas no diário.
-- `--reset` só depois de avisar a equipe. Modo `official` só a partir da sexta de manhã.
+- Rodadas que viram evidência são copiadas para `results/` com o mesmo nome e citadas no diário. A baseline da equipe fica em `results/baseline-equipe/`.
+- `--reset` só depois de avisar a equipe. Modo `official` só com a aprovação da Lídia.
+- Entregas finais (código, `results/final_result.json`, diário) vão para o repositório oficial `Deloitte-Tester/Bootcamp-01`.
 
 ## Definição de pronto (por tarefa)
-1. Código + teste passando.
-2. Rodada em conformance com o número antes/depois.
-3. Entrada no diário.
-4. PR revisado e na `main`.
+1. Código + teste passando (`pytest` e `ruff` limpos).
+2. Rodada em conformance com `comparar.py` **APROVADO** e os números antes e depois.
+3. Entrada no diário completa (`I-<sessão>.<n>`).
+4. PR revisado pela Lídia e na `master`.
